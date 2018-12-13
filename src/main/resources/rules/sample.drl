@@ -4,60 +4,55 @@ import sample.Frame
 import java.util.ArrayList
 import java.util.Arrays;
 
-declare enum Question
-    genre("Which genre?"), comics("Which comics");
-    value: String
+declare QuestionResponse
+    que: String
+    res: String
 end
 
-declare enum Answer
-    genre1("gen1"),
-    genre2("gen2"),
-    genre3("gen3"),
-    genre4("HERE"),
-    comics1("com1"),
-    comics2("com2"),
-    comics3("HERE");
-    value: String
-end
-
-declare Comics
-    name: String
-end
-
-
-declare Genre
-    name: String
-end
-
-rule "Init"
+rule "Which genere interests you"
     when
     then
-        Genre genre = new Genre();
-        genre.setName(Frame.optionDialog(
-                Question.genre.getValue(),
-                Answer.genre1.getValue(),
-                Answer.genre2.getValue(),
-                Answer.genre3.getValue(),
-                Answer.genre4.getValue()));
-        insert(genre);
+        QuestionResponse qr = new QuestionResponse();
+        qr.setQue("Which genere interests you?");
+        qr.setRes(Frame.optionDialog(
+                qr.getQue(),
+                "Supers",
+                "Genere shouldn't matter",
+                "Generes related to near present"));
+        insert(qr);
 end
 
-rule "Second"
+rule "Based on real comics"
     when
-        exists Genre(name == Answer.genre4.getValue())
+        exists QuestionResponse(que == "Which genere interests you?", res == "Supers")
     then
-        Comics comics = new Comics();
-        comics.setName(Frame.optionDialog(
-                Question.comics.getValue(),
-                Answer.comics1.getValue(),
-                Answer.comics2.getValue(),
-                Answer.comics3.getValue()));
-        insert(comics);
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Based on real comics?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "DC",
+                        "Marvel",
+                        "No or other"));
+                insert(qr);
+end
+
+rule "Like undead"
+    when
+        exists QuestionResponse(que == "Which genere interests you?", res == "Generes related to near present")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Like undead?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "I can be a vampire?!",
+                        "If done well",
+                        "No really"));
+                insert(qr);
 end
 
 rule "Final"
     when
-        exists Comics(name == Answer.genre4.getValue()) and exists Genre(name == Answer.comics3.getValue())
+        exists QuestionResponse(que == "Like undead?", res == "I can be a vampire?!")
     then
-        Frame.answerDialog("Finished!");
+        Frame.answerDialog("World of Darkness!");
 end
