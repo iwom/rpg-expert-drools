@@ -46,13 +46,79 @@ rule "Like undead"
                         qr.getQue(),
                         "I can be a vampire?!",
                         "If done well",
-                        "No really"));
+                        "Not really"));
                 insert(qr);
 end
 
-rule "Final"
+rule "Humor, Spies, Gothic, etc"
+    when
+        exists QuestionResponse(que == "Like undead?", res == "Not really")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Gothic",
+                        "Alternate Realities",
+                        "Cyberpunk",
+                        "Humor",
+                        "Spies"));
+                insert(qr);
+end
+
+rule "Point pools for action resolution"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Alternate Realities")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Point pools for action resolution?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No"));
+                insert(qr);
+end
+
+// ----- Final rules -----
+
+rule "World of Darkness"
     when
         exists QuestionResponse(que == "Like undead?", res == "I can be a vampire?!")
     then
-        Frame.answerDialog("World of Darkness!");
+        Frame.answerDialog("World of Darkness");
+end
+
+rule "Call Of Cthulhu"
+    when
+        exists QuestionResponse(que == "Like undead?", res == "If done well")
+    then
+        Frame.answerDialog("Call Of Cthulhu");
+end
+
+rule "Paranoia"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Humor")
+    then
+        Frame.answerDialog("Paranoia");
+end
+
+rule "Warhammer 40K RP"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Gothic")
+    then
+        Frame.answerDialog("Warhammer 40K RP");
+end
+
+rule "Nobilis"
+    when
+        exists QuestionResponse(que == "Point pools for action resolution?", res == "Yes")
+    then
+        Frame.answerDialog("Nobilis");
+end
+
+rule "Amber"
+    when
+        exists QuestionResponse(que == "Point pools for action resolution?", res == "No")
+    then
+        Frame.answerDialog("Amber");
 end
