@@ -9,7 +9,7 @@ declare QuestionResponse
     res: String
 end
 
-rule "Which genere interests you"
+rule "Which genere interests you?"
     when
     then
         QuestionResponse qr = new QuestionResponse();
@@ -22,7 +22,7 @@ rule "Which genere interests you"
         insert(qr);
 end
 
-rule "Based on real comics"
+rule "Based on real comics?"
     when
         exists QuestionResponse(que == "Which genere interests you?", res == "Supers")
     then
@@ -36,7 +36,7 @@ rule "Based on real comics"
                 insert(qr);
 end
 
-rule "Like undead"
+rule "Like undead?"
     when
         exists QuestionResponse(que == "Which genere interests you?", res == "Generes related to near present")
     then
@@ -50,7 +50,7 @@ rule "Like undead"
                 insert(qr);
 end
 
-rule "Humor, Spies, Gothic, etc"
+rule "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?"
     when
         exists QuestionResponse(que == "Like undead?", res == "Not really")
     then
@@ -66,7 +66,7 @@ rule "Humor, Spies, Gothic, etc"
                 insert(qr);
 end
 
-rule "Point pools for action resolution"
+rule "Point pools for action resolution?"
     when
         exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Alternate Realities")
     then
@@ -76,6 +76,60 @@ rule "Point pools for action resolution"
                         qr.getQue(),
                         "Yes",
                         "No"));
+                insert(qr);
+end
+
+rule "Really? (Genere)"
+    when
+        exists QuestionResponse(que == "Which genere interests you?", res == "Genere shouldn't matter")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Really?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No, not really"));
+                insert(qr);
+end
+
+rule "Which genere interests you? (loop avoiding)"
+    when
+        exists QuestionResponse(que == "Really?", res == "No, not really")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Which genere interests you?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Supers",
+                        "Generes related to near present"));
+                insert(qr);
+end
+
+rule "What is du/dx = cu+xy?"
+    when
+        exists QuestionResponse(que == "Really?", res == "Yes")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("What is du/dx = cu+xy?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "A differential equation",
+                        "It should be +x not +xy",
+                        "Huh?"));
+                insert(qr);
+end
+
+rule "Want some other generes mixed with that?"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Cyberpunk")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Want some other generes mixed with that?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Straight up",
+                        "Some Magic",
+                        "A little of everything"));
                 insert(qr);
 end
 
@@ -121,4 +175,32 @@ rule "Amber"
         exists QuestionResponse(que == "Point pools for action resolution?", res == "No")
     then
         Frame.answerDialog("Amber");
+end
+
+rule "HERO"
+    when
+        exists QuestionResponse(que == "What is du/dx = cu+xy?", res == "A differential equation")
+    then
+        Frame.answerDialog("HERO");
+end
+
+rule "GURPS"
+    when
+        exists QuestionResponse(que == "What is du/dx = cu+xy?", res == "It should be +x not +xy")
+    then
+        Frame.answerDialog("GURPS");
+end
+
+rule "CyberPunk 2020"
+    when
+        exists QuestionResponse(que == "Want some other generes mixed with that?", res == "Straight up")
+    then
+        Frame.answerDialog("CyberPunk 2020");
+end
+
+rule "Shadowrun"
+    when
+        exists QuestionResponse(que == "Want some other generes mixed with that?", res == "Some Magic")
+    then
+        Frame.answerDialog("Shadowrun");
 end
