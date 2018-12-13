@@ -4,60 +4,779 @@ import sample.Frame
 import java.util.ArrayList
 import java.util.Arrays;
 
-declare enum Question
-    genre("Which genre?"), comics("Which comics");
-    value: String
+declare QuestionResponse
+    que: String
+    res: String
 end
 
-declare enum Answer
-    genre1("gen1"),
-    genre2("gen2"),
-    genre3("gen3"),
-    genre4("HERE"),
-    comics1("com1"),
-    comics2("com2"),
-    comics3("HERE");
-    value: String
-end
-
-declare Comics
-    name: String
-end
-
-
-declare Genre
-    name: String
-end
-
-rule "Init"
+rule "Which genere interests you?"
     when
     then
-        Genre genre = new Genre();
-        genre.setName(Frame.optionDialog(
-                Question.genre.getValue(),
-                Answer.genre1.getValue(),
-                Answer.genre2.getValue(),
-                Answer.genre3.getValue(),
-                Answer.genre4.getValue()));
-        insert(genre);
+        QuestionResponse qr = new QuestionResponse();
+        qr.setQue(drools.getRule().getName());
+        qr.setRes(Frame.optionDialog(
+                qr.getQue(),
+                "Supers",
+                "Genere shouldn't matter",
+                "Generes related to near present",
+                "Far Future"));
+        insert(qr);
 end
 
-rule "Second"
+rule "Based on real comics?"
     when
-        exists Genre(name == Answer.genre4.getValue())
+        exists QuestionResponse(que == "Which genere interests you?", res == "Supers")
     then
-        Comics comics = new Comics();
-        comics.setName(Frame.optionDialog(
-                Question.comics.getValue(),
-                Answer.comics1.getValue(),
-                Answer.comics2.getValue(),
-                Answer.comics3.getValue()));
-        insert(comics);
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "DC",
+                        "Marvel",
+                        "No or other"));
+                insert(qr);
 end
 
-rule "Final"
+rule "Like undead?"
     when
-        exists Comics(name == Answer.genre4.getValue()) and exists Genre(name == Answer.comics3.getValue())
+        exists QuestionResponse(que == "Which genere interests you?", res == "Generes related to near present")
     then
-        Frame.answerDialog("Finished!");
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "I can be a vampire?!",
+                        "If done well",
+                        "Not really"));
+                insert(qr);
+end
+
+rule "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?"
+    when
+        exists QuestionResponse(que == "Like undead?", res == "Not really")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Gothic",
+                        "Alternate Realities",
+                        "Cyberpunk",
+                        "Humor",
+                        "Spies"));
+                insert(qr);
+end
+
+rule "Point pools for action resolution?"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Alternate Realities")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No"));
+                insert(qr);
+end
+
+rule "Really?"
+    when
+        exists QuestionResponse(que == "Which genere interests you?", res == "Genere shouldn't matter")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No, not really"));
+                insert(qr);
+end
+
+rule "Which genere interests you? (loop avoiding)"
+    when
+        exists QuestionResponse(que == "Really?", res == "No, not really")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Which genere interests you?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Supers",
+                        "Generes related to near present",
+                        "Far Future"));
+                insert(qr);
+end
+
+rule "What is du/dx = cu+xy?"
+    when
+        exists QuestionResponse(que == "Really?", res == "Yes")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "A differential equation",
+                        "It should be +x not +xy",
+                        "Huh?"));
+                insert(qr);
+end
+
+rule "Want some other generes mixed with that?"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Cyberpunk")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Straight up",
+                        "Some Magic",
+                        "A little of everything"));
+                insert(qr);
+end
+
+rule "Old or new school?"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Spies")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Old",
+                        "New"));
+                insert(qr);
+end
+
+rule "D20 based or d20 lite?"
+    when
+        exists QuestionResponse(que == "Old or new school?", res == "New")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Full d20",
+                        "Lite"));
+                insert(qr);
+end
+
+rule "Based on a Movie or TV show?"
+    when
+        exists QuestionResponse(que == "Which genere interests you?", res == "Far Future")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Stargate",
+                        "Star Wars",
+                        "Other",
+                        "No"));
+                insert(qr);
+end
+
+rule "Have lots of d6s and don't care about episodes 1-3?"
+    when
+        exists QuestionResponse(que == "Based on a Movie or TV show?", res == "Star Wars")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No"));
+                insert(qr);
+end
+
+rule "Do you want a game with an open license?"
+    when
+        exists QuestionResponse(que == "Based on a Movie or TV show?", res == "No")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No",
+                        "Yes and no"));
+                insert(qr);
+end
+
+rule "D&D/TSR derivative or not?"
+    when
+        exists QuestionResponse(que == "Do you want a game with an open license?", res == "No")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "Not"));
+                insert(qr);
+end
+
+rule "Gothic, Space Opera or Post Apocalyptic?"
+    when
+        exists QuestionResponse(que == "D&D/TSR derivative or not?", res == "Not")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Gothic",
+                        "Space Opera",
+                        "Post Apocalyptic",
+                        "Semi-generic"));
+                insert(qr);
+end
+
+rule "Old school D&D 2E, 3E or 4E based?"
+    when
+        exists QuestionResponse(que == "D&D/TSR derivative or not?", res == "Yes")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "2E",
+                        "3E",
+                        "4E",
+                        "Old School"));
+                insert(qr);
+end
+
+rule "Science Fiction or Science Fantasy?"
+    when
+        exists QuestionResponse(que == "Old school D&D 2E, 3E or 4E based?", res == "Old School")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Science Fiction",
+                        "Science Fantasy"));
+                insert(qr);
+end
+
+rule "Want a diceless system or one with lots of online fansites?"
+    when
+        exists QuestionResponse(que == "Based on real comics?", res == "Marvel")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Diceless",
+                        "Cards",
+                        "Online Fansites"));
+                insert(qr);
+end
+
+rule "Exponential scale, D6 pool or heavily modified D&D attributes?"
+    when
+        exists QuestionResponse(que == "Based on real comics?", res == "DC")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Log",
+                        "D6 pool",
+                        "Modified D20"));
+                insert(qr);
+end
+
+rule "Do you like d20? (skills, feats, etc.)"
+    when
+        exists QuestionResponse(que == "Based on real comics?", res == "No or other")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No"));
+                insert(qr);
+end
+
+rule "Do you like point buy character gen?"
+    when
+        exists QuestionResponse(que == "Do you like d20? (skills, feats, etc.)", res == "No")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "Yes, with fractions!",
+                        "Not really",
+                        "The rules don't even need balancing..."));
+                insert(qr);
+end
+
+rule "Want a game with an open license?"
+    when
+        exists QuestionResponse(que == "What is du/dx = cu+xy?", res == "Huh?")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No",
+                        "Doesn't matter"));
+                insert(qr);
+end
+
+rule "Want one that is \"cinematic\" or has a bit of humor?"
+    when
+        exists QuestionResponse(que == "Want a game with an open license?", res == "Yes")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Cinematic",
+                        "No",
+                        "Humor"));
+                insert(qr);
+end
+
+rule "Have a niche genere in mind?"
+    when
+        exists QuestionResponse(que == "Want one that is \"cinematic\" or has a bit of humor?", res == "No")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "Supernatural or pulp",
+                        "Super Heroes"));
+                insert(qr);
+end
+
+rule "Supernatural or pulp?"
+    when
+        exists QuestionResponse(que == "Have a niche genere in mind?", res == "Supernatural or pulp")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Supernatural",
+                        "Pulp"));
+                insert(qr);
+end
+
+rule "Like Aspects?"
+    when
+        exists QuestionResponse(que == "Have a niche genere in mind?", res == "Yes")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No"));
+                insert(qr);
+end
+
+rule "Maybe you want sci-fi licensed games?"
+    when
+        exists QuestionResponse(que == "Want a game with an open license?", res == "No")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No",
+                        "Yes, and I have a PhD in Math or CS"));
+                insert(qr);
+end
+
+rule "Open-ended rolls/Acting?"
+    when
+        exists QuestionResponse(que == "Maybe you want sci-fi licensed games?", res == "No")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue(drools.getRule().getName());
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "Yes",
+                        "No"));
+                insert(qr);
+end
+
+rule "Really? (License)"
+    when
+        exists QuestionResponse(que == "Want a game with an open license?", res == "Doesn't matter")
+    then
+        QuestionResponse qr = new QuestionResponse();
+                qr.setQue("Really?");
+                qr.setRes(Frame.optionDialog(
+                        qr.getQue(),
+                        "A fascist could make it for all I care",
+                        "Sorta"));
+                insert(qr);
+end
+
+// ----- Final rules -----
+
+rule "World of Darkness"
+    when
+        exists QuestionResponse(que == "Like undead?", res == "I can be a vampire?!")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Call Of Cthulhu"
+    when
+        exists QuestionResponse(que == "Like undead?", res == "If done well")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Paranoia"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Humor")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Warhammer 40K RP"
+    when
+        exists QuestionResponse(que == "Humor, Spies, Gothic, Alternate Realities, or Cyberpunk?", res == "Gothic")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Nobilis"
+    when
+        exists QuestionResponse(que == "Point pools for action resolution?", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Amber"
+    when
+        exists QuestionResponse(que == "Point pools for action resolution?", res == "No")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "HERO"
+    when
+        exists QuestionResponse(que == "What is du/dx = cu+xy?", res == "A differential equation")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "GURPS"
+    when
+        exists QuestionResponse(que == "What is du/dx = cu+xy?", res == "It should be +x not +xy")
+        or
+        exists QuestionResponse(que == "Maybe you want sci-fi licensed games?", res == "Yes, and I have a PhD in Math or CS")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "CyberPunk 2020"
+    when
+        exists QuestionResponse(que == "Want some other generes mixed with that?", res == "Straight up")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Shadowrun"
+    when
+        exists QuestionResponse(que == "Want some other generes mixed with that?", res == "Some Magic")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "RIFTS"
+    when
+        exists QuestionResponse(que == "Want some other generes mixed with that?", res == "A little of everything")
+        or
+        exists QuestionResponse(que == "Really?", res == "A fascist could make it for all I care")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Top Secret"
+    when
+        exists QuestionResponse(que == "Old or new school?", res == "Old")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "D20 Modern"
+    when
+        exists QuestionResponse(que == "D20 based or d20 lite?", res == "Full d20")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Spycraft"
+    when
+        exists QuestionResponse(que == "D20 based or d20 lite?", res == "Lite")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Fringeworthy"
+    when
+        exists QuestionResponse(que == "Based on a Movie or TV show?", res == "Stargate")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Just do a web search for the movie/show and \"RPG\""
+    when
+        exists QuestionResponse(que == "Based on a Movie or TV show?", res == "Other")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Star Wars SAGA"
+    when
+        exists QuestionResponse(que == "Have lots of d6s and don't care about episodes 1-3?", res == "No")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Star Wars D6"
+    when
+        exists QuestionResponse(que == "Have lots of d6s and don't care about episodes 1-3?", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Eclipse Phase"
+    when
+        exists QuestionResponse(que == "Do you want a game with an open license?", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Traveller"
+    when
+        exists QuestionResponse(que == "Do you want a game with an open license?", res == "Yes and no")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Warhammer 40K RPG"
+    when
+        exists QuestionResponse(que == "Gothic, Space Opera or Post Apocalyptic?", res == "Gothic")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Fading Suns"
+    when
+        exists QuestionResponse(que == "Gothic, Space Opera or Post Apocalyptic?", res == "Space Opera")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "GURPS Fallout"
+    when
+        exists QuestionResponse(que == "Gothic, Space Opera or Post Apocalyptic?", res == "Post Apocalyptic")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "GURPS Trashuman Space"
+    when
+        exists QuestionResponse(que == "Gothic, Space Opera or Post Apocalyptic?", res == "Semi-generic")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Alternity"
+    when
+        exists QuestionResponse(que == "Old school D&D 2E, 3E or 4E based?", res == "2E")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "D20 Future"
+    when
+        exists QuestionResponse(que == "Old school D&D 2E, 3E or 4E based?", res == "3E")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Gamma World"
+    when
+        exists QuestionResponse(que == "Old school D&D 2E, 3E or 4E based?", res == "4E")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Star Frontiers"
+    when
+        exists QuestionResponse(que == "Science Fiction or Science Fantasy?", res == "Science Fiction")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Metamorphosis Alpha"
+    when
+        exists QuestionResponse(que == "Science Fiction or Science Fantasy?", res == "Science Fantasy")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Marvel SAGA"
+    when
+        exists QuestionResponse(que == "Want a diceless system or one with lots of online fansites?", res == "Cards")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Marvel Universe"
+    when
+        exists QuestionResponse(que == "Want a diceless system or one with lots of online fansites?", res == "Diceless")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Marvel Super-Heroes (FASERIP)"
+    when
+        exists QuestionResponse(que == "Want a diceless system or one with lots of online fansites?", res == "Online Fansites")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "DC Heroes"
+    when
+        exists QuestionResponse(que == "Exponential scale, D6 pool or heavily modified D&D attributes?", res == "Log")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "DC Universe"
+    when
+        exists QuestionResponse(que == "Exponential scale, D6 pool or heavily modified D&D attributes?", res == "D6 pool")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "DC Adventures"
+    when
+        exists QuestionResponse(que == "Exponential scale, D6 pool or heavily modified D&D attributes?", res == "Modified D20")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Mutants and Masterminds"
+    when
+        exists QuestionResponse(que == "Do you like d20? (skills, feats, etc.)", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Champions"
+    when
+        exists QuestionResponse(que == "Do you like point buy character gen?", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "GRUPS Supers"
+    when
+        exists QuestionResponse(que == "Do you like point buy character gen?", res == "Yes, with fractions!")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "ICONS"
+    when
+        exists QuestionResponse(que == "Do you like point buy character gen?", res == "Not really")
+        or
+        exists QuestionResponse(que == "Have a niche genere in mind?", res == "Super Heroes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Heroes Unlimited"
+    when
+        exists QuestionResponse(que == "Do you like point buy character gen?", res == "The rules don't even need balancing...")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Open d6"
+    when
+        exists QuestionResponse(que == "Want one that is \"cinematic\" or has a bit of humor?", res == "Cinematic")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Risus"
+    when
+        exists QuestionResponse(que == "Want one that is \"cinematic\" or has a bit of humor?", res == "Humor")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Dresden Files"
+    when
+        exists QuestionResponse(que == "Supernatural or pulp?", res == "Supernatural")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Spirit of the Century"
+    when
+        exists QuestionResponse(que == "Supernatural or pulp?", res == "Pulp")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "FATE"
+    when
+        exists QuestionResponse(que == "Like Aspects?", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "FUDGE"
+    when
+        exists QuestionResponse(que == "Like Aspects?", res == "No")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Cortex"
+    when
+        exists QuestionResponse(que == "Maybe you want sci-fi licensed games?", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Savage Worlds"
+    when
+        exists QuestionResponse(que == "Open-ended rolls/Acting?", res == "Yes")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "Basic Role-Playing"
+    when
+        exists QuestionResponse(que == "Open-ended rolls/Acting?", res == "No")
+    then
+        Frame.answerDialog(drools.getRule().getName());
+end
+
+rule "TORG"
+    when
+        exists QuestionResponse(que == "Really?", res == "Sorta")
+    then
+        Frame.answerDialog(drools.getRule().getName());
 end
