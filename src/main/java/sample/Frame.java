@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class Frame extends JFrame {
+
+    private static int questionNumber = 1;
     public static JFrame frame;
 
     public static void init(){
@@ -26,13 +28,14 @@ public final class Frame extends JFrame {
         int selection =  JOptionPane.showOptionDialog(
                 null,
                 question,
-                "Title",
+                "Question #" + questionNumber,
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 answers,
                 answers[0]
         );
+        questionNumber += 1;
         return answers[selection];
     }
 
